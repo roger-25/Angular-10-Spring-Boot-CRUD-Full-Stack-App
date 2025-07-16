@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
         REPOSITORY_URI: 746669234841.dkr.ecr.us-east-1.amazonaws.com/crud
-        $ImageName: frontend
+        ImageName: frontend
  
 phases:
   install:
