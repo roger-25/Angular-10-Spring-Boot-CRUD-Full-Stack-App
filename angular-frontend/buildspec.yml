@@ -2,8 +2,8 @@ version: 0.2
  
 env:
   variables:
-    ImageName: frontend
-    REPOSITORY_URI: 746669234841.dkr.ecr.us-east-1.amazonaws.com/crud
+        REPOSITORY_URI: 746669234841.dkr.ecr.us-east-1.amazonaws.com/crud
+        $ImageName: frontend
  
 phases:
   install:
@@ -22,8 +22,7 @@ phases:
     commands:
       - echo Building Docker image...
       - docker build -t $ImageName -f angular-frontend/Dockerfile angular-frontend
-
-
+      - docker tag $ImageName:latest $REPOSITORY_URI:latest
  
   post_build:
     commands:
