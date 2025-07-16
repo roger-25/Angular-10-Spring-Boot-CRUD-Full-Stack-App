@@ -1,29 +1,30 @@
 version: 0.2
- 
+
 env:
   variables:
-        REPOSITORY_URI: 746669234841.dkr.ecr.us-east-1.amazonaws.com/crud
-        ImageName: frontend
- 
+    REPOSITORY_URI: 746669234841.dkr.ecr.us-east-1.amazonaws.com/crud
+    ImageName: frontend   # ✅ Corrected this line
+
 phases:
   install:
     runtime-versions:
       nodejs: 16
- 
+
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 746669234841.dkr.ecr.us-east-1.amazonaws.com
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - echo IMAGE_TAG=$IMAGE_TAG
       - export IMAGE_TAG
- 
+
   build:
     commands:
       - echo Building Docker image...
       - docker build -t $ImageName -f angular-frontend/Dockerfile angular-frontend
       - docker tag $ImageName:latest $REPOSITORY_URI:latest
- 
+      - docker tag $ImageName:latest $REPOSITORY_URI:$IMAGE_TAG
+
   post_build:
     commands:
       - echo Pushing Docker image to Amazon ECR...
@@ -31,7 +32,7 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Creating imagedefinitions.json for ECS...
       - printf '[{"name":"my-angular-frontend","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
- 
+
 artifacts:
   files:
     - imagedefinitions.json
