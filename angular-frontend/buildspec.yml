@@ -2,6 +2,7 @@ version: 0.2
  
 env:
   variables:
+    ImageName: frontend
     REPOSITORY_URI: 746669234841.dkr.ecr.us-east-1.amazonaws.com/crud
  
 phases:
